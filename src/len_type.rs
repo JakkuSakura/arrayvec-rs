@@ -46,7 +46,7 @@ pub trait CapToDefaultLenType {
     type T: LenUint;
 }
 
-impl_default_lentype_from_cap!(u8 => 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 32, 64, 100, 128, 200, 255);
+impl_default_lentype_from_cap!(u8 => 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 32, 64, 96, 100, 128, 200, 255);
 impl_default_lentype_from_cap!(u16 => 256, 500, 512, 1000, 1024, 2048, 4096, 8192, 16384, 32768, 65535);
 impl_default_lentype_from_cap!(u32 => 65536, 1000000, 4294967295);
 impl_default_lentype_from_cap!(u64 => 18446744073709551615);
