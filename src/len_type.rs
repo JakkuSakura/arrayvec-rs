@@ -6,8 +6,12 @@ macro_rules! impl_lenuint {
         impl $LenUint for $ty {
             const MAX: usize = <$ty>::MAX as usize;
             const ZERO: Self = 0;
-            fn from_usize(n: usize) -> Self { n as $ty }
-            fn to_usize(self) -> usize { self as usize }
+            fn from_usize(n: usize) -> Self {
+                n as $ty
+            }
+            fn to_usize(self) -> usize {
+                self as usize
+            }
         }
     };
 }
@@ -15,6 +19,7 @@ macro_rules! impl_lenuint {
 macro_rules! impl_default_lentype_from_cap {
     ($LenT:ty => $($CAP:literal),*) => {
         $(
+            #[cfg(feature = "nightly")]
             impl CapToDefaultLenType for ConstGenericSmuggler<$CAP> {
                 type T = $LenT;
             }
@@ -22,7 +27,7 @@ macro_rules! impl_default_lentype_from_cap {
     };
 }
 
-pub trait LenUint: Add + Sub + Copy + PartialOrd + PartialEq + private::Sealed  {
+pub trait LenUint: Add + Sub + Copy + PartialOrd + PartialEq + private::Sealed {
     const MAX: usize;
     const ZERO: Self;
     fn from_usize(n: usize) -> Self;
@@ -46,9 +51,16 @@ pub trait CapToDefaultLenType {
     type T: LenUint;
 }
 
+impl<const CAP: usize> CapToDefaultLenType for ConstGenericSmuggler<CAP> {
+    #[cfg(not(feature = "nightly"))]
+    type T = u32;
+    #[cfg(feature = "nightly")]
+    default type T = u32;
+}
+
 impl_default_lentype_from_cap!(u8 => 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 32, 64, 100, 128, 200, 255);
 impl_default_lentype_from_cap!(u16 => 256, 500, 512, 1000, 1024, 2048, 4096, 8192, 16384, 32768, 65535);
-impl_default_lentype_from_cap!(u32 => 65536, 1000000, 4294967295);
+// impl_default_lentype_from_cap!(u32 => 65536, 1000000, 4294967295);
 impl_default_lentype_from_cap!(u64 => 18446744073709551615);
 
 pub trait CapFitsInLenType {
