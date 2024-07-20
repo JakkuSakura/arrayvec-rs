@@ -47,6 +47,7 @@ harness = false
 [features]
 default = ["std"]
 std = []
+nightly = []
 
 [profile.bench]
 debug = true
